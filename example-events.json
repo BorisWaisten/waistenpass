@@ -1,0 +1,63 @@
+[
+  {
+    "name": "Concierto de Rock en Vivo - Buenos Aires",
+    "description": "Una noche inolvidable con las mejores bandas de rock nacional e internacional. Incluye artistas como Los Fabulosos Cadillacs, La Renga, Divididos y más.",
+    "location": "Estadio Luna Park, Av. Corrientes 2250, Buenos Aires",
+    "startDate": "2025-12-15T21:00:00Z",
+    "endDate": "2025-12-15T23:30:00Z",
+    "capacity": 5000,
+    "price": 25000,
+    "currency": "ARS",
+    "categories": ["Música", "Concierto", "Rock"],
+    "organizerId": "550e8400-e29b-41d4-a716-446655440000"
+  },
+  {
+    "name": "Festival Tech Future 2025",
+    "description": "El evento de tecnología más importante del año. Conferencias, workshops y networking con los mejores profesionales del sector. Incluye charlas sobre IA, desarrollo web, cloud computing y más.",
+    "location": "La Rural, Av. Sarmiento 2704, Palermo, Buenos Aires",
+    "startDate": "2026-01-10T09:00:00Z",
+    "endDate": "2026-01-12T18:00:00Z",
+    "capacity": 3000,
+    "price": 35000,
+    "currency": "ARS",
+    "categories": ["Tecnología", "Conferencia", "Networking"],
+    "organizerId": "550e8400-e29b-41d4-a716-446655440000"
+  },
+  {
+    "name": "Partido de Fútbol - Copa Libertadores",
+    "description": "Vive la emoción del fútbol de primera división. Partido de local con todas las comodidades del estadio más grande del país.",
+    "location": "Estadio Monumental, Av. Figueroa Alcorta 7597, Nuñez, Buenos Aires",
+    "startDate": "2025-11-20T19:30:00Z",
+    "endDate": "2025-11-20T21:30:00Z",
+    "capacity": 70000,
+    "price": 15000,
+    "currency": "ARS",
+    "categories": ["Deportes", "Fútbol"],
+    "organizerId": "550e8400-e29b-41d4-a716-446655440000"
+  },
+  {
+    "name": "Obra de Teatro: El Fantasma de la Ópera",
+    "description": "Una producción espectacular del clásico musical. Con escenografía impresionante, vestuario de época y un elenco de primer nivel.",
+    "location": "Teatro Colón, Cerrito 628, C1010 CABA",
+    "startDate": "2025-10-25T20:00:00Z",
+    "endDate": "2025-10-25T22:30:00Z",
+    "capacity": 2500,
+    "price": 18000,
+    "currency": "ARS",
+    "categories": ["Teatro", "Musical", "Arte"],
+    "organizerId": "550e8400-e29b-41d4-a716-446655440000"
+  },
+  {
+    "name": "Conferencia de Emprendedores 2025",
+    "description": "Evento para emprendedores y startups. Networking, charlas inspiradoras, pitch sessions y oportunidades de inversión.",
+    "location": "Centro de Convenciones Buenos Aires, Av. del Libertador 750",
+    "startDate": "2025-11-05T08:00:00Z",
+    "endDate": "2025-11-05T18:00:00Z",
+    "capacity": 1500,
+    "price": 12000,
+    "currency": "ARS",
+    "categories": ["Conferencia", "Negocios", "Emprendimiento"],
+    "organizerId": "550e8400-e29b-41d4-a716-446655440000"
+  }
+]
+

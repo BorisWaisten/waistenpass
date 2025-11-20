@@ -1,0 +1,601 @@
+openapi: 3.1.0
+info:
+  title: Easy Ticket API
+  version: 0.1.0
+  description: API REST para gestión de tickets
+servers:
+  - url: http://localhost:4000/api
+tags:
+  - name: Auth
+    description: Autenticación y autorización
+  - name: Tickets
+    description: Operaciones relacionadas con tickets
+  - name: Users
+    description: Operaciones relacionadas con usuarios
+  - name: Events
+    description: Operaciones relacionadas con eventos
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Iniciar sesión
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login exitoso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Credenciales inválidas
+  /tickets:
+    post:
+      tags:
+        - Tickets
+      summary: Crear ticket
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTicketRequest'
+      responses:
+        '201':
+          description: Ticket creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ticket'
+    get:
+      tags:
+        - Tickets
+      summary: Listar tickets
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: userId
+          required: false
+          schema:
+            type: string
+            format: uuid
+          description: Filtrar por ID de usuario
+        - in: query
+          name: eventId
+          required: false
+          schema:
+            type: string
+            format: uuid
+          description: Filtrar por ID de evento
+      responses:
+        '200':
+          description: Lista de tickets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Ticket'
+  /tickets/{id}:
+    get:
+      tags:
+        - Tickets
+      summary: Obtener ticket por ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Ticket encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ticket'
+    put:
+      tags:
+        - Tickets
+      summary: Actualizar ticket
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTicketRequest'
+      responses:
+        '200':
+          description: Ticket actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ticket'
+    delete:
+      tags:
+        - Tickets
+      summary: Eliminar ticket
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Ticket eliminado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ticket'
+  /users:
+    post:
+      tags:
+        - Users
+      summary: Registrar usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '201':
+          description: Usuario creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    get:
+      tags:
+        - Users
+      summary: Listar usuarios
+      responses:
+        '200':
+          description: Lista de usuarios
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+  /users/{id}:
+    get:
+      tags:
+        - Users
+      summary: Obtener usuario por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Usuario encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    put:
+      tags:
+        - Users
+      summary: Actualizar usuario
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserRequest'
+      responses:
+        '200':
+          description: Usuario actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    delete:
+      tags:
+        - Users
+      summary: Eliminar usuario
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Usuario eliminado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /events:
+    post:
+      tags:
+        - Events
+      summary: Crear evento
+      description: |
+        Crea un nuevo evento. Requiere autenticación y rol de administrador u organizador.
+        
+        **Reglas de autorización:**
+        - **Admin**: Puede crear eventos para cualquier organizador (cualquier `organizerId`)
+        - **Organizer**: Solo puede crear eventos para sí mismo (el `organizerId` debe coincidir con su propio ID)
+        
+        **Nota importante:** El `organizerId` debe ser un UUID válido de un usuario existente en el sistema.
+        Puedes obtener el ID de un usuario usando el endpoint GET /users.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEventRequest'
+            examples:
+              conciertoRock:
+                summary: Concierto de Rock
+                value:
+                  name: "Concierto de Rock en Vivo"
+                  description: "Una noche inolvidable con las mejores bandas de rock nacional e internacional. Incluye artistas como Los Fabulosos Cadillacs, La Renga y más."
+                  location: "Estadio Luna Park, Av. Corrientes 2250, Buenos Aires"
+                  startDate: "2025-12-15T21:00:00Z"
+                  endDate: "2025-12-15T23:30:00Z"
+                  capacity: 5000
+                  price: 25000
+                  currency: "ARS"
+                  categories: ["Música", "Concierto", "Rock"]
+                  organizerId: "550e8400-e29b-41d4-a716-446655440000"
+              festivalTecnologia:
+                summary: Festival de Tecnología
+                value:
+                  name: "Festival Tech Future 2025"
+                  description: "El evento de tecnología más importante del año. Conferencias, workshops y networking con los mejores profesionales del sector."
+                  location: "La Rural, Palermo, Buenos Aires"
+                  startDate: "2026-01-10T09:00:00Z"
+                  endDate: "2026-01-12T18:00:00Z"
+                  capacity: 3000
+                  price: 35000
+                  currency: "ARS"
+                  categories: ["Tecnología", "Conferencia", "Networking"]
+                  organizerId: "550e8400-e29b-41d4-a716-446655440000"
+      responses:
+        '201':
+          description: Evento creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+              example:
+                id: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                name: "Concierto de Rock en Vivo"
+                description: "Una noche inolvidable con las mejores bandas de rock nacional e internacional."
+                location: "Estadio Luna Park, Av. Corrientes 2250, Buenos Aires"
+                startDate: "2025-12-15T21:00:00.000Z"
+                endDate: "2025-12-15T23:30:00.000Z"
+                capacity: 5000
+                sold: 0
+                price: 25000
+                currency: "ARS"
+                categories: ["Música", "Concierto", "Rock"]
+                organizerId: "550e8400-e29b-41d4-a716-446655440000"
+        '400':
+          description: Error de validación
+        '401':
+          description: No autenticado
+        '403':
+          description: No autorizado (requiere rol admin)
+    get:
+      tags:
+        - Events
+      summary: Listar eventos
+      responses:
+        '200':
+          description: Lista de eventos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+  /events/{id}:
+    get:
+      tags:
+        - Events
+      summary: Obtener evento por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Evento encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+    put:
+      tags:
+        - Events
+      summary: Actualizar evento
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEventRequest'
+      responses:
+        '200':
+          description: Evento actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+    delete:
+      tags:
+        - Events
+      summary: Eliminar evento
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Evento eliminado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+components:
+  schemas:
+    CreateTicketRequest:
+      type: object
+      required: [eventId, price, currency]
+      properties:
+        eventId:
+          type: string
+        price:
+          type: number
+        currency:
+          type: string
+          minLength: 3
+          maxLength: 3
+      description: userId se asigna automáticamente desde el token de autenticación
+    CreateUserRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+        role:
+          type: string
+          enum: [admin, organizer, attendee]
+          default: attendee
+    Ticket:
+      allOf:
+        - $ref: '#/components/schemas/CreateTicketRequest'
+        - type: object
+          properties:
+            id:
+              type: string
+            status:
+              type: string
+              enum: [pending, confirmed, cancelled, validated]
+            issuedAt:
+              type: string
+              format: date-time
+            validatedAt:
+              type: string
+              format: date-time
+    UpdateTicketRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [pending, confirmed, cancelled, validated]
+        price:
+          type: number
+          minimum: 0
+        currency:
+          type: string
+          minLength: 3
+          maxLength: 3
+    User:
+      allOf:
+        - $ref: '#/components/schemas/CreateUserRequest'
+        - type: object
+          properties:
+            id:
+              type: string
+            createdAt:
+              type: string
+              format: date-time
+    UpdateUserRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+        role:
+          type: string
+          enum: [admin, organizer, attendee]
+    CreateEventRequest:
+      type: object
+      required: [name, description, location, startDate, endDate, capacity, price, organizerId]
+      properties:
+        name:
+          type: string
+          example: "Concierto de Rock en Vivo"
+          description: "Nombre del evento"
+        description:
+          type: string
+          example: "Una noche inolvidable con las mejores bandas de rock nacional e internacional"
+          description: "Descripción detallada del evento"
+        location:
+          type: string
+          example: "Estadio Luna Park, Buenos Aires"
+          description: "Ubicación del evento"
+        startDate:
+          type: string
+          format: date-time
+          example: "2025-12-15T21:00:00Z"
+          description: "Fecha y hora de inicio del evento (ISO 8601)"
+        endDate:
+          type: string
+          format: date-time
+          example: "2025-12-15T23:30:00Z"
+          description: "Fecha y hora de finalización del evento (ISO 8601)"
+        capacity:
+          type: integer
+          minimum: 1
+          example: 5000
+          description: "Capacidad máxima de asistentes"
+        price:
+          type: number
+          minimum: 0
+          example: 25000
+          description: "Precio base del ticket en la moneda especificada"
+        currency:
+          type: string
+          minLength: 3
+          maxLength: 3
+          default: "ARS"
+          example: "ARS"
+          description: "Código de moneda ISO 4217 (3 letras)"
+        categories:
+          type: array
+          items:
+            type: string
+          default: []
+          example: ["Música", "Concierto"]
+          description: "Categorías del evento"
+        organizerId:
+          type: string
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
+          description: "ID del organizador del evento"
+    UpdateEventRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        location:
+          type: string
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        capacity:
+          type: integer
+          minimum: 1
+        categories:
+          type: array
+          items:
+            type: string
+    Event:
+      allOf:
+        - $ref: '#/components/schemas/CreateEventRequest'
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              example: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+              description: "ID único del evento"
+            sold:
+              type: integer
+              minimum: 0
+              example: 0
+              description: "Cantidad de tickets vendidos"
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+    LoginResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+        user:
+          type: object
+          properties:
+            id:
+              type: string
+            email:
+              type: string
+            role:
+              type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

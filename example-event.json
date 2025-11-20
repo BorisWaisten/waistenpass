@@ -1,0 +1,13 @@
+{
+  "name": "Concierto de Rock en Vivo - Buenos Aires",
+  "description": "Una noche inolvidable con las mejores bandas de rock nacional e internacional. Incluye artistas como Los Fabulosos Cadillacs, La Renga, Divididos y más. El evento contará con sistema de sonido de última generación, iluminación profesional y un ambiente único para disfrutar de la mejor música en vivo.",
+  "location": "Estadio Luna Park, Av. Corrientes 2250, C1043AAQ Buenos Aires",
+  "startDate": "2025-12-15T21:00:00Z",
+  "endDate": "2025-12-15T23:30:00Z",
+  "capacity": 5000,
+  "price": 25000,
+  "currency": "ARS",
+  "categories": ["Música", "Concierto", "Rock"],
+  "organizerId": "REEMPLAZAR_CON_TU_USER_ID"
+}
+
