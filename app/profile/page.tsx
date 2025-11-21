@@ -14,7 +14,7 @@ import {
   Tabs,
   Typography
 } from '@mui/material';
-import Grid2 from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import { useState, useMemo } from 'react';
 import { useTickets } from '@/lib/hooks/useTickets';
 import { useEvents } from '@/lib/hooks/useEvents';
@@ -77,8 +77,8 @@ export default function ProfilePage() {
 
   return (
     <Container sx={{ py: 8 }}>
-      <Grid2 container spacing={4}>
-        <Grid2 size={{ xs: 12, md: 4 }}>
+      <Grid container spacing={4}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Card>
             <CardContent>
               <Stack spacing={2} alignItems="center">
@@ -108,8 +108,8 @@ export default function ProfilePage() {
               </DividerSection>
             </CardContent>
           </Card>
-        </Grid2>
-        <Grid2 size={{ xs: 12, md: 8 }}>
+        </Grid>
+        <Grid size={{ xs: 12, md: 8 }}>
           <Card>
             <Tabs value={tab} onChange={(_, value) => setTab(value)} variant="scrollable" scrollButtons="auto">
               <Tab label="Mis tickets" />
@@ -124,8 +124,8 @@ export default function ProfilePage() {
               {tab === 3 && <EmptyState text="No tenés métodos de pago guardados." />}
             </CardContent>
           </Card>
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     </Container>
   );
 }
