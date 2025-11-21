@@ -85,7 +85,7 @@ export default function EventDetailPage() {
   const eventId = params?.id;
   const { event, loading, error } = useEvent(eventId);
   const { events: allEvents } = useEvents();
-  const { purchase, loading: purchaseLoading } = usePurchaseTicket();
+  const { createPaymentPreference, loading: purchaseLoading } = usePurchaseTicket();
   const [tab, setTab] = useState(0);
   const [selectedTier, setSelectedTier] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
@@ -160,13 +160,13 @@ export default function EventDetailPage() {
     setPurchaseState('idle');
     setPurchaseMessage('');
     try {
-      const result = await purchase(event.id, activeTier.price, event.currency, quantity);
-      setPurchaseState('success');
-      setPurchaseMessage(`¡Compra exitosa! Se compraron ${result.total} ticket(s) por ${formatCurrency(result.totalPrice, event.currency)}. Podés ver tus tickets en tu perfil.`);
-      // Refrescar el evento para actualizar la disponibilidad
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
+      const result = await createPaymentPreference(event.id, quantity);
+      // Redirigir al usuario a Mercado Pago para completar el pago
+      if (result.initPoint) {
+        window.location.href = result.initPoint;
+      } else {
+        throw new Error('No se pudo generar el link de pago');
+      }
     } catch (err) {
       setPurchaseState('error');
       setPurchaseMessage((err as Error).message || 'Error al procesar la compra. Por favor, intentá nuevamente.');

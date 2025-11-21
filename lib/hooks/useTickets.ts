@@ -34,16 +34,14 @@ export function usePurchaseTicket() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const purchase = useCallback(async (eventId: string, price: number, currency: string, quantity: number = 1) => {
+  const createPaymentPreference = useCallback(async (eventId: string, quantity: number = 1) => {
     try {
       setLoading(true);
       setError(null);
-      const response = await authFetch<{ tickets: TicketDTO[]; total: number; totalPrice: number }>('/tickets', {
+      const response = await authFetch<{ preferenceId: string; initPoint: string; ticketIds: string[] }>('/payments/preference', {
         method: 'POST',
         json: {
           eventId,
-          price,
-          currency,
           quantity
         }
       });
@@ -57,5 +55,5 @@ export function usePurchaseTicket() {
     }
   }, []);
 
-  return { purchase, loading, error };
+  return { createPaymentPreference, loading, error };
 }
